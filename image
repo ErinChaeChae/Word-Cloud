@@ -1,0 +1,47 @@
+from konlpy.tag import Kkma
+kkma = Kkma()
+import nltk
+from konlpy.corpus import kobill
+doc_ko = open('craw.txt', encoding = "UTF-8").read()
+#doc_ko
+
+from konlpy.tag import Okt;
+t = Okt()
+tokens_ko = t.nouns(doc_ko)
+#tokens_ko
+
+ko = nltk.Text(tokens_ko, name = '앱 기대효과')
+#print(len(ko.tokens))
+#print(len(set(ko.tokens)))
+#ko.vocab()
+
+import matplotlib.pyplot as plt
+from matplotlib import font_manager, rc
+font_name = font_manager.FontProperties(fname="BMJUA_ttf.ttf").get_name() #글씨체 선택
+rc('font', family=font_name)
+
+plt.figure(figsize=(12, 6))
+#ko.plot(50)
+#plt.show()
+from PIL import Image
+from wordcloud import WordCloud
+import numpy as np
+
+mask = np.array(Image.open('korea.png')) #이미지 선택 (배경이 투명화 되어있어야 모양이 나옴)
+from wordcloud import ImageColorGenerator
+color = ImageColorGenerator(mask)
+
+data = ko.vocab().most_common(150)
+wordcloud = WordCloud(font_path = 'BMJUA_ttf.ttf',
+                     relative_scaling = 0.2,
+                     background_color ='white',
+                     mask=mask,
+                     min_font_size=1, max_font_size =40
+                     ).generate_from_frequencies(dict(data))
+
+plt.figure(figsize=(12,12))
+plt.imshow(wordcloud.recolor(color_func=color),interpolation = 'bilinear')
+plt.axis("off")
+plt.show()
+wordcloud.to_file('capstone.png') # png파일로 다운로드
+ 
