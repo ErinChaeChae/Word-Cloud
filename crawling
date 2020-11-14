@@ -1,0 +1,31 @@
+# -*- coding: cp949 -*-
+
+import requests
+import nltk
+from bs4 import BeautifulSoup
+from konlpy.tag import Hannanum
+from nltk.tokenize import RegexpTokenizer
+from collections import Counter
+
+from wordcloud import WordCloud
+from wordcloud import ImageColorGenerator
+from PIL import Image
+import numpy as np
+import random
+from matplotlib import pyplot as plt
+
+hannanum = Hannanum()
+tokenizer = RegexpTokenizer("[\w]+")
+webpage = requests.get("https://docs.google.com/spreadsheets/d/13xKJi-yifZU8K6LgdfOMaFDB2x_cd4vYsnH2Dv-VEls/edit#gid=1936019537") #url주소
+soup = BeautifulSoup(webpage.content, "html.parser")
+docs = [] #갯수 세기위해 리스트 만들어주기
+
+for x in range(0,18): 
+    y = hannanum.nouns(soup.select(".s1")[x].get_text()) #속성 s1, s0, class... 각자 선택
+    docs.append(y)
+
+noun = sum(docs, [])
+noun = [n for n in noun if len(n) > 1]
+
+count = Counter(noun)
+count
